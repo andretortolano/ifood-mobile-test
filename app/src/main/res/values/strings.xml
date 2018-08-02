@@ -1,0 +1,12 @@
+<resources>
+  <string name="app_name">HappyTwitter</string>
+
+  <!-- Usertweets -->
+  <string name="usertweets_finduser_username_hint">AndrehST</string>
+  <string name="usertweets_finduser_search_button">Search</string>
+  <string name="usertweets_finduser_error_user_not_found">User not found.</string>
+  <string name="usertweets_finduser_error_user_disabled">User disabled.</string>
+
+  <!-- Tweetlist -->
+  <string name="tweetlist_secured_tweets">Tweets from this user are private</string>
+</resources>
