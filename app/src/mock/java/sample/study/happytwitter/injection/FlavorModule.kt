@@ -6,7 +6,4 @@ import dagger.Module
 @Module(includes = [MockRetrofitModule::class])
 abstract class FlavorModule {
 
-  //  @Binds
-  //  @Singleton
-  //  abstract fun providePicassoService(picassoHelper: MockWebHelper): IWebHelper
 }

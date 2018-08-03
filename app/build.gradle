@@ -28,6 +28,10 @@ android {
     disable 'ContentDescription'
   }
 
+  testOptions {
+    unitTests.returnDefaultValues = true
+  }
+
   flavorDimensions "api"
 
   productFlavors {

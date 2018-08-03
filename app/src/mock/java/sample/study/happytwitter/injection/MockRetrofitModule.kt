@@ -2,6 +2,8 @@ package sample.study.happytwitter.injection
 
 import dagger.Binds
 import dagger.Module
+import sample.study.happytwitter.data.retrofit.GoogleAPI
+import sample.study.happytwitter.data.retrofit.MockGoogleAPI
 import sample.study.happytwitter.data.retrofit.MockTwitterAPI
 import sample.study.happytwitter.data.retrofit.TwitterAPI
 import javax.inject.Singleton
@@ -13,4 +15,8 @@ abstract class MockRetrofitModule {
   @Binds
   @Singleton
   abstract fun provideTwitterAPI(mock: MockTwitterAPI): TwitterAPI
+
+  @Binds
+  @Singleton
+  abstract fun provideGoogleAPI(mock: MockGoogleAPI): GoogleAPI
 }
