@@ -4,12 +4,16 @@ import com.nhaarman.mockito_kotlin.any
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.HttpException
+import retrofit2.Response
 import sample.study.happytwitter.data.objects.TwitterUser
 import sample.study.happytwitter.data.retrofit.TwitterAPI
 import sample.study.happytwitter.presentation.usertweets.finduser.cycle.FindUserIntent
@@ -47,7 +51,12 @@ class FindUserViewModelTest {
   }
 
   @Test
-  fun `find user progress`() {
+  fun `Initial ViewState`() {
+    testObserver.assertValueAt(0, FindUserViewState(false, null))
+  }
+
+  @Test
+  fun `SearchUserAction - Verify Searching will emit`() {
     `when`(twitterAPI.getUser(any())).thenReturn(Single.just(validUser))
 
     viewModel.intentsHandler(Observable.just(FindUserIntent.SearchButtonIntent("username")))
@@ -57,11 +66,50 @@ class FindUserViewModelTest {
   }
 
   @Test
-  fun `find user Success`() {
+  fun `SearchUserAction - Success`() {
     `when`(twitterAPI.getUser(any())).thenReturn(Single.just(validUser))
 
     viewModel.intentsHandler(Observable.just(FindUserIntent.SearchButtonIntent("username")))
 
+    testObserver.assertValueAt(1) { viewState -> viewState.searchUserRequestState == SearchUserRequestState.Searching }
     testObserver.assertValueAt(2) { viewState -> viewState.searchUserRequestState == SearchUserRequestState.Success(validUser) }
+  }
+
+  @Test
+  fun `SearchUserAction - UserNotFound`() {
+    val response =
+        Response.error<Void>(404, ResponseBody.create(MediaType.parse(""), "{\"errors\": [{\"code\":50, \"message\": \"User not found.\"}]}"))
+    `when`(twitterAPI.getUser(any())).thenReturn(Single.error(HttpException(response)))
+
+    viewModel.intentsHandler(Observable.just(FindUserIntent.SearchButtonIntent("username")))
+
+    testObserver.assertValueAt(1) { viewState -> viewState.searchUserRequestState == SearchUserRequestState.Searching }
+    testObserver.assertValueAt(2) { viewState -> viewState.searchUserRequestState == SearchUserRequestState.UserNotFound }
+  }
+
+  @Test
+  fun `SearchUserAction - UserDisabled`() {
+    val response =
+        Response.error<Void>(402, ResponseBody.create(MediaType.parse(""), "{\"errors\": [{\"code\":63, \"message\": \"User not found.\"}]}"))
+    `when`(twitterAPI.getUser(any())).thenReturn(Single.error(HttpException(response)))
+
+    viewModel.intentsHandler(Observable.just(FindUserIntent.SearchButtonIntent("username")))
+
+    testObserver.assertValueAt(1) { viewState -> viewState.searchUserRequestState == SearchUserRequestState.Searching }
+    testObserver.assertValueAt(2) { viewState -> viewState.searchUserRequestState == SearchUserRequestState.UserDisabled }
+  }
+
+  @Test
+  fun `ChangeUserAction - not empty`() {
+    viewModel.intentsHandler(Observable.just(FindUserIntent.ChangeUserIntent("a")))
+
+    testObserver.assertValueAt(1, FindUserViewState(searchEnabled = true))
+  }
+
+  @Test
+  fun `ChangeUserAction - empty`() {
+    viewModel.intentsHandler(Observable.just(FindUserIntent.ChangeUserIntent("")))
+
+    testObserver.assertValueAt(0, FindUserViewState(searchEnabled = false))
   }
 }

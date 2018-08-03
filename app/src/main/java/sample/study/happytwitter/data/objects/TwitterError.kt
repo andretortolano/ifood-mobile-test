@@ -13,8 +13,8 @@ class TwitterError constructor(response: HttpException) {
         ?.string()
 
     val responseError = Gson().fromJson(errorJsonString, TwitterErrorList::class.java)
-    responseError.errors?.let {
-      it.firstOrNull()
+    responseError.errors?.let { TwitterErrorItem ->
+      TwitterErrorItem.firstOrNull()
           .let {
             code = it?.code ?: 0
             message = it?.message ?: ""
