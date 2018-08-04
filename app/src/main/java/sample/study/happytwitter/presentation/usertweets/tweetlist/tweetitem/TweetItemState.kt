@@ -1,6 +1,6 @@
 package sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem
 
-import sample.study.happytwitter.base.IViewState
+import sample.study.happytwitter.base.mvi.IViewState
 import sample.study.happytwitter.data.objects.TwitterTweet
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetSentiment.NEUTRAL
 

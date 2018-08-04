@@ -1,15 +1,15 @@
 package sample.study.happytwitter.base.view
 
 import io.reactivex.Observable
-import sample.study.happytwitter.base.IIntent
-import sample.study.happytwitter.base.IViewState
+import sample.study.happytwitter.base.mvi.IAction
+import sample.study.happytwitter.base.mvi.IViewState
 
-interface IView<I : IIntent, in VS : IViewState> {
+interface IView<A : IAction, in VS : IViewState> {
 
   /**
-   * Emmit Intents
+   * Emmit Actions
    */
-  fun intents(): Observable<I>
+  fun actions(): Observable<A>
 
   /**
    * Renders ViewStates

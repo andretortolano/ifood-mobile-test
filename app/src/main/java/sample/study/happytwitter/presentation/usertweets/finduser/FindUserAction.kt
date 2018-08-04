@@ -1,6 +1,6 @@
-package sample.study.happytwitter.presentation.usertweets.finduser.cycle
+package sample.study.happytwitter.presentation.usertweets.finduser
 
-import sample.study.happytwitter.base.IAction
+import sample.study.happytwitter.base.mvi.IAction
 
 sealed class FindUserAction : IAction {
   data class ChangeUserAction(val username: String) : FindUserAction()

@@ -1,15 +1,15 @@
-package sample.study.happytwitter.presentation.usertweets.tweetlist.cycle
+package sample.study.happytwitter.presentation.usertweets.tweetlist
 
-import sample.study.happytwitter.base.IResult
+import sample.study.happytwitter.base.mvi.IResult
 import sample.study.happytwitter.data.objects.TwitterTweet
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetItemState
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetSentiment
 
 sealed class TweetListResult : IResult {
   sealed class LoadTweetsResult : TweetListResult() {
-    class Loading : LoadTweetsResult()
+    object Loading : LoadTweetsResult()
     data class Success(val tweets: List<TwitterTweet>) : LoadTweetsResult()
-    class PrivateList : LoadTweetsResult()
+    object PrivateList : LoadTweetsResult()
     data class UnknownError(val error: Throwable) : LoadTweetsResult()
   }
 

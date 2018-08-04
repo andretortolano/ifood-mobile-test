@@ -4,7 +4,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,19 +16,16 @@ import kotlinx.android.synthetic.main.usertweets_tweetlist_view.secured_content_
 import kotlinx.android.synthetic.main.usertweets_tweetlist_view.tweets_loading_progressbar
 import kotlinx.android.synthetic.main.usertweets_tweetlist_view.tweets_recyclerview
 import sample.study.happytwitter.R
+import sample.study.happytwitter.base.network.NetworkingViewState
 import sample.study.happytwitter.base.view.BaseFragment
 import sample.study.happytwitter.base.view.IView
 import sample.study.happytwitter.data.objects.TwitterUser
-import sample.study.happytwitter.presentation.usertweets.tweetlist.cycle.LoadTweetsRequestState
-import sample.study.happytwitter.presentation.usertweets.tweetlist.cycle.TweetListIntent
-import sample.study.happytwitter.presentation.usertweets.tweetlist.cycle.TweetListIntent.AnalyseTweetIntent
-import sample.study.happytwitter.presentation.usertweets.tweetlist.cycle.TweetListIntent.InitIntent
-import sample.study.happytwitter.presentation.usertweets.tweetlist.cycle.TweetListViewState
+import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListViewState.Companion.ERROR_PRIVATE_USER
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetRecyclerAdapter
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class TweetListFragment : BaseFragment(), IView<TweetListIntent, TweetListViewState> {
+class TweetListFragment : BaseFragment(), IView<TweetListAction, TweetListViewState> {
 
   companion object {
     const val EXTRA_USER_TWITTER = "EXTRA_USER_TWITTER"
@@ -86,7 +82,7 @@ class TweetListFragment : BaseFragment(), IView<TweetListIntent, TweetListViewSt
     // Subscribe to the viewModel and call render for every emitted state
     disposables.add(viewModel.states().subscribe(this::render))
     // Pass the UI's intents to the ViewModel
-    viewModel.intentsHandler(intents())
+    viewModel.actions(actions())
   }
 
   override fun onDestroy() {
@@ -94,30 +90,33 @@ class TweetListFragment : BaseFragment(), IView<TweetListIntent, TweetListViewSt
     disposables.clear()
   }
 
-  private fun initialIntent(): Observable<InitIntent> {
-    return Observable.just(TweetListIntent.InitIntent(twitterUser))
+  override fun actions(): Observable<TweetListAction> {
+    val initialIntent = Observable.just(TweetListAction.LoadTweetsAction(twitterUser.screen_name))
+
+    val analyzeTweetIntent = tweetListAdapter.itemClickObservable.map { TweetListAction.AnalyzeTweetAction(it) }
+
+    return Observable.merge(initialIntent, analyzeTweetIntent)
   }
 
-  private fun analyseTweetIntent(): Observable<AnalyseTweetIntent> {
-    return tweetListAdapter.itemClickObservable.map { TweetListIntent.AnalyseTweetIntent(it) }
-  }
-
-  override fun intents(): Observable<TweetListIntent> {
-    return Observable.merge(initialIntent(), analyseTweetIntent())
-  }
-
-  private var loadTweetsError: Throwable? = null
+  private var loadTweetsError: String? = null
 
   override fun render(state: TweetListViewState) {
-    Log.d("ViewModelRender", "render called. ${state.loadedTweetList.size}")
     var isLoading = false
     var isPrivate = false
-    var error: Throwable? = null
-    state.loadTweetsRequestState?.let {
-      when (it) {
-        is LoadTweetsRequestState.Loading -> isLoading = true
-        is LoadTweetsRequestState.ErrorPrivateTweets -> isPrivate = true
-        is LoadTweetsRequestState.Error -> error = it.error
+    var error: String? = null
+    when (state.loadTweetsNetworking) {
+      is NetworkingViewState.Loading -> isLoading = true
+      is NetworkingViewState.Success -> {
+        state.loadedTweetList?.let {
+          tweetListAdapter.refreshList(state.loadedTweetList)
+          tweets_recyclerview.visibility = View.VISIBLE
+        }
+      }
+      is NetworkingViewState.Error -> {
+        when (state.loadTweetsNetworking.errorMessage) {
+          ERROR_PRIVATE_USER -> isPrivate = true
+          else -> error = state.loadTweetsNetworking.errorMessage
+        }
       }
     }
 
@@ -128,13 +127,6 @@ class TweetListFragment : BaseFragment(), IView<TweetListIntent, TweetListViewSt
     }
 
     secured_content_group.visibility = if (isPrivate) {
-      View.VISIBLE
-    } else {
-      View.GONE
-    }
-
-    tweetListAdapter.refreshList(state.loadedTweetList)
-    tweets_recyclerview.visibility = if (state.loadedTweetList.isNotEmpty()) {
       View.VISIBLE
     } else {
       View.GONE

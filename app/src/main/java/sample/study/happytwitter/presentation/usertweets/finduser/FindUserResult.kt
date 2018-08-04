@@ -1,19 +1,19 @@
-package sample.study.happytwitter.presentation.usertweets.finduser.cycle
+package sample.study.happytwitter.presentation.usertweets.finduser
 
-import sample.study.happytwitter.base.IResult
+import sample.study.happytwitter.base.mvi.IResult
 import sample.study.happytwitter.data.objects.TwitterUser
 
 sealed class FindUserResult : IResult {
   sealed class ChangeUserResult : FindUserResult() {
-    class Valid : ChangeUserResult()
-    class Invalid : ChangeUserResult()
+    object Valid : ChangeUserResult()
+    object Invalid : ChangeUserResult()
   }
 
   sealed class SearchUserResult : FindUserResult() {
-    class Loading : SearchUserResult()
+    object Loading : SearchUserResult()
     data class Success(val user: TwitterUser) : SearchUserResult()
+    object UserNotFound : SearchUserResult()
+    object UserDisabled : SearchUserResult()
     data class UnknownError(val error: Throwable) : SearchUserResult()
-    class UserNotFound : SearchUserResult()
-    class UserDisabled : SearchUserResult()
   }
 }

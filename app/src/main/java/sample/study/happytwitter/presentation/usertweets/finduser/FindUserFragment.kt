@@ -17,17 +17,17 @@ import kotlinx.android.synthetic.main.usertweets_finduser_view.search_error_text
 import kotlinx.android.synthetic.main.usertweets_finduser_view.search_user_button
 import kotlinx.android.synthetic.main.usertweets_finduser_view.username_edittext
 import sample.study.happytwitter.R
+import sample.study.happytwitter.base.network.NetworkingViewState
 import sample.study.happytwitter.base.view.BaseFragment
 import sample.study.happytwitter.base.view.IView
 import sample.study.happytwitter.presentation.usertweets.UserTweetsActivity
-import sample.study.happytwitter.presentation.usertweets.finduser.cycle.FindUserIntent
-import sample.study.happytwitter.presentation.usertweets.finduser.cycle.FindUserViewState
-import sample.study.happytwitter.presentation.usertweets.finduser.cycle.SearchUserRequestState
+import sample.study.happytwitter.presentation.usertweets.finduser.FindUserViewState.Companion.ERROR_USER_DISABLED
+import sample.study.happytwitter.presentation.usertweets.finduser.FindUserViewState.Companion.ERROR_USER_NOT_FOUND
 import sample.study.happytwitter.utils.hideSoftKeyboard
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class FindUserFragment : BaseFragment(), IView<FindUserIntent, FindUserViewState> {
+class FindUserFragment : BaseFragment(), IView<FindUserAction, FindUserViewState> {
 
   @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -57,7 +57,7 @@ class FindUserFragment : BaseFragment(), IView<FindUserIntent, FindUserViewState
     disposables.add(viewModel.states().subscribe(this::render))
 
     // Pass the UI's intents to the ViewModel
-    viewModel.intentsHandler(intents())
+    viewModel.actions(actions())
   }
 
   override fun onDestroy() {
@@ -65,39 +65,42 @@ class FindUserFragment : BaseFragment(), IView<FindUserIntent, FindUserViewState
     disposables.clear()
   }
 
-  override fun intents(): Observable<FindUserIntent> {
+  override fun actions(): Observable<FindUserAction> {
     val changeUserIntent = username_edittext.textChanges()
         .skipInitialValue()
-        .map { FindUserIntent.ChangeUserIntent(username) }
+        .map { FindUserAction.ChangeUserAction(username) }
 
     val searchButtonIntent = search_user_button.clicks()
-        .map { FindUserIntent.SearchButtonIntent(username) }
+        .map { FindUserAction.SearchUserAction(username) }
 
     val searchIconSoftKeyboardIntent = username_edittext.editorActionEvents()
         .filter { it.actionId() == EditorInfo.IME_ACTION_SEARCH && isSearchEnabled }
         .doOnNext { hideSoftKeyboard(activity!!) }
-        .map { FindUserIntent.SearchSoftKeyboardIntent(username) }
+        .map { FindUserAction.SearchUserAction(username) }
 
     return Observable.merge(changeUserIntent, searchButtonIntent, searchIconSoftKeyboardIntent)
   }
 
-  private var searchUserError: Throwable? = null
-
   override fun render(state: FindUserViewState) {
-    isSearchEnabled = state.searchEnabled
+    isSearchEnabled = state.isSearchEnabled
+    search_user_button.isEnabled = state.isSearchEnabled
+
     var isLoading = false
     var searchErrorMessage: String? = null
-    var error: Throwable? = null
-    state.searchUserRequestState?.let { requestState ->
-      when (requestState) {
-        is SearchUserRequestState.Searching -> isLoading = true
-        is SearchUserRequestState.Success -> {
-          (activity as UserTweetsActivity).showTweetListView(requestState.twitterUser)
+    when (state.searchUserNetworking) {
+      is NetworkingViewState.Loading -> isLoading = true
+      is NetworkingViewState.Success -> {
+        state.twitterUser?.let {
+          (activity as UserTweetsActivity).showTweetListView(state.twitterUser)
           return
         }
-        is SearchUserRequestState.UserNotFound -> searchErrorMessage = getString(R.string.usertweets_finduser_error_user_not_found)
-        is SearchUserRequestState.UserDisabled -> searchErrorMessage = getString(R.string.usertweets_finduser_error_user_disabled)
-        is SearchUserRequestState.Error -> error = requestState.error
+      }
+      is NetworkingViewState.Error -> {
+        searchErrorMessage = when (state.searchUserNetworking.errorMessage) {
+          ERROR_USER_NOT_FOUND -> getString(R.string.usertweets_finduser_error_user_not_found)
+          ERROR_USER_DISABLED -> getString(R.string.usertweets_finduser_error_user_disabled)
+          else -> state.searchUserNetworking.errorMessage
+        }
       }
     }
 
@@ -107,18 +110,11 @@ class FindUserFragment : BaseFragment(), IView<FindUserIntent, FindUserViewState
       View.GONE
     }
 
-    search_user_button.isEnabled = isSearchEnabled && !isLoading
-
     if (searchErrorMessage != null) {
       search_error_textview.text = searchErrorMessage
       search_error_textview.visibility = View.VISIBLE
     } else {
       search_error_textview.visibility = View.GONE
-    }
-
-    if (searchUserError != error) {
-      searchUserError = error
-      showToast(searchUserError)
     }
   }
 }

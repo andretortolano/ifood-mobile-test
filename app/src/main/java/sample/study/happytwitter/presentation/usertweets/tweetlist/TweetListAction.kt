@@ -1,6 +1,6 @@
-package sample.study.happytwitter.presentation.usertweets.tweetlist.cycle
+package sample.study.happytwitter.presentation.usertweets.tweetlist
 
-import sample.study.happytwitter.base.IAction
+import sample.study.happytwitter.base.mvi.IAction
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetItemState
 
 sealed class TweetListAction : IAction {
