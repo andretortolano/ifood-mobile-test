@@ -4,7 +4,7 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.usertweets_view.primary_fragment
 import sample.study.happytwitter.R
 import sample.study.happytwitter.base.view.BaseActivity
-import sample.study.happytwitter.data.objects.TwitterUser
+import sample.study.happytwitter.data.twitter.TwitterUser
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserFragment
 import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListFragment
 import sample.study.happytwitter.utils.addFragmentToActivity

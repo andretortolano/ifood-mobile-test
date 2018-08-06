@@ -1,7 +1,7 @@
 package sample.study.happytwitter.presentation.usertweets.tweetlist
 
 import sample.study.happytwitter.base.mvi.IResult
-import sample.study.happytwitter.data.objects.TwitterTweet
+import sample.study.happytwitter.data.twitter.TwitterTweet
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetItemState
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetSentiment
 

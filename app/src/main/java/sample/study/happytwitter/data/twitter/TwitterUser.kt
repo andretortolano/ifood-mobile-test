@@ -1,10 +1,14 @@
-package sample.study.happytwitter.data.objects
+package sample.study.happytwitter.data.twitter
 
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
 import android.os.Parcelable.Creator
 
-data class TwitterUser(val id: Long,
+@Entity(tableName = "user")
+data class TwitterUser(
+    @PrimaryKey val id: Long,
     val name: String,
     val screen_name: String,
     val description: String,

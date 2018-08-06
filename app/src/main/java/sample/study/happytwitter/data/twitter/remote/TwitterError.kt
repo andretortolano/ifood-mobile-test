@@ -1,4 +1,4 @@
-package sample.study.happytwitter.data.objects
+package sample.study.happytwitter.data.twitter.remote
 
 import com.google.gson.Gson
 import retrofit2.HttpException

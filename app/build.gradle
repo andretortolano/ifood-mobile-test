@@ -61,10 +61,14 @@ dependencies {
   implementation 'com.android.support:support-core-ui:27.1.1'
   implementation 'com.android.support:design:27.1.1'
 
-  //ViewModel
+  // ViewModel
   implementation "android.arch.lifecycle:runtime:1.1.1"
   implementation "android.arch.lifecycle:extensions:1.1.1"
   kapt 'android.arch.lifecycle:compiler:1.1.1'
+  // Room
+  implementation 'android.arch.persistence.room:runtime:1.1.1'
+  implementation 'android.arch.persistence.room:rxjava2:1.1.1'
+  kapt 'android.arch.persistence.room:compiler:1.1.1'
 
   // MP Android Charts
   implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'

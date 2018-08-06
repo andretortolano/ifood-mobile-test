@@ -16,8 +16,8 @@ import retrofit2.HttpException
 import retrofit2.Response
 import sample.study.happytwitter.base.network.NetworkingViewState
 import sample.study.happytwitter.base.network.NetworkingViewState.Error
-import sample.study.happytwitter.data.objects.TwitterUser
-import sample.study.happytwitter.data.retrofit.TwitterAPI
+import sample.study.happytwitter.data.twitter.ITwitterRepo
+import sample.study.happytwitter.data.twitter.TwitterUser
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserViewState.Companion.ERROR_USER_DISABLED
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserViewState.Companion.ERROR_USER_NOT_FOUND
 import sample.study.happytwitter.utils.schedulers.ISchedulerProvider
@@ -27,7 +27,7 @@ import sample.study.happytwitter.utils.schedulers.MockSchedulerProvider
 class FindUserViewModelTest {
 
   @Mock
-  private lateinit var twitterAPI: TwitterAPI
+  private lateinit var twitterRepository: ITwitterRepo
 
   private lateinit var schedulerProvider: ISchedulerProvider
 
@@ -44,7 +44,7 @@ class FindUserViewModelTest {
   fun before() {
     schedulerProvider = MockSchedulerProvider()
 
-    viewModel = FindUserViewModel(twitterAPI, schedulerProvider)
+    viewModel = FindUserViewModel(twitterRepository, schedulerProvider)
 
     testObserver = viewModel.states()
         .test()
@@ -57,7 +57,7 @@ class FindUserViewModelTest {
 
   @Test
   fun `SearchUserAction - Verify Searching will emit`() {
-    `when`(twitterAPI.getUser(any())).thenReturn(Single.just(validUser))
+    `when`(twitterRepository.getUser(any())).thenReturn(Single.just(validUser))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 
@@ -67,7 +67,7 @@ class FindUserViewModelTest {
 
   @Test
   fun `SearchUserAction - Success`() {
-    `when`(twitterAPI.getUser(any())).thenReturn(Single.just(validUser))
+    `when`(twitterRepository.getUser(any())).thenReturn(Single.just(validUser))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 
@@ -78,7 +78,7 @@ class FindUserViewModelTest {
   fun `SearchUserAction - UserNotFound`() {
     val response =
         Response.error<Void>(404, ResponseBody.create(MediaType.parse(""), "{\"errors\": [{\"code\":50, \"message\": \"User not found.\"}]}"))
-    `when`(twitterAPI.getUser(any())).thenReturn(Single.error(HttpException(response)))
+    `when`(twitterRepository.getUser(any())).thenReturn(Single.error(HttpException(response)))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 
@@ -89,7 +89,7 @@ class FindUserViewModelTest {
   fun `SearchUserAction - UserDisabled`() {
     val response =
         Response.error<Void>(402, ResponseBody.create(MediaType.parse(""), "{\"errors\": [{\"code\":63, \"message\": \"User not found.\"}]}"))
-    `when`(twitterAPI.getUser(any())).thenReturn(Single.error(HttpException(response)))
+    `when`(twitterRepository.getUser(any())).thenReturn(Single.error(HttpException(response)))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 

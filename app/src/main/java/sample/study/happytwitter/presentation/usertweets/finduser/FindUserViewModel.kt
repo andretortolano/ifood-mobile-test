@@ -6,8 +6,9 @@ import io.reactivex.functions.BiFunction
 import retrofit2.HttpException
 import sample.study.happytwitter.base.mvi.BaseViewModel
 import sample.study.happytwitter.base.network.NetworkingViewState
-import sample.study.happytwitter.data.objects.TwitterError
-import sample.study.happytwitter.data.retrofit.TwitterAPI
+import sample.study.happytwitter.data.twitter.ITwitterRepo
+import sample.study.happytwitter.data.twitter.TwitterRepository
+import sample.study.happytwitter.data.twitter.remote.TwitterError
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserAction.ChangeUserAction
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserAction.SearchUserAction
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserResult.ChangeUserResult
@@ -19,7 +20,7 @@ import sample.study.happytwitter.utils.schedulers.ISchedulerProvider
 import javax.inject.Inject
 
 class FindUserViewModel @Inject constructor(
-    private val twitterAPI: TwitterAPI,
+    private val twitterRepository: ITwitterRepo,
     private val schedulerProvider: ISchedulerProvider
 ) : BaseViewModel<FindUserAction, FindUserResult, FindUserViewState>() {
 
@@ -41,7 +42,7 @@ class FindUserViewModel @Inject constructor(
 
   private val searchUserProcessor = ObservableTransformer<SearchUserAction, SearchUserResult> { actions ->
     actions.flatMap { action ->
-      twitterAPI.getUser(action.username)
+      twitterRepository.getUser(action.username)
           .toObservable()
           // replace _normal from image so that we have a decent profile image to load.
           .map { user -> user.copy(profile_image_url = user.profile_image_url?.replace("_normal", "_400x400")) }

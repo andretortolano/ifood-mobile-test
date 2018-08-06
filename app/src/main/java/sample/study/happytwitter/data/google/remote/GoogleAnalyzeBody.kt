@@ -1,4 +1,4 @@
-package sample.study.happytwitter.data.objects
+package sample.study.happytwitter.data.google.remote
 
 data class GoogleAnalyzeBody(val document: Document,
     val encodingType: String = "UTF8"

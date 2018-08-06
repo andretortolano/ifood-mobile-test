@@ -19,7 +19,7 @@ import sample.study.happytwitter.R
 import sample.study.happytwitter.base.network.NetworkingViewState
 import sample.study.happytwitter.base.view.BaseFragment
 import sample.study.happytwitter.base.view.IView
-import sample.study.happytwitter.data.objects.TwitterUser
+import sample.study.happytwitter.data.twitter.TwitterUser
 import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListViewState.Companion.ERROR_PRIVATE_USER
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetRecyclerAdapter
 import javax.inject.Inject

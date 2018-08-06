@@ -1,10 +1,8 @@
-package sample.study.happytwitter.data.retrofit
+package sample.study.happytwitter.data.google.remote
 
 import io.reactivex.Single
 import retrofit2.http.Body
 import retrofit2.http.POST
-import sample.study.happytwitter.data.objects.GoogleAnalyzeBody
-import sample.study.happytwitter.data.objects.GoogleAnalyzeResponse
 
 interface GoogleAPI {
 

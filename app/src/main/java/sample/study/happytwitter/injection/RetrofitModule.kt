@@ -3,8 +3,8 @@ package sample.study.happytwitter.injection
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import sample.study.happytwitter.data.retrofit.GoogleAPI
-import sample.study.happytwitter.data.retrofit.TwitterAPI
+import sample.study.happytwitter.data.google.remote.GoogleAPI
+import sample.study.happytwitter.data.twitter.remote.TwitterAPI
 import javax.inject.Named
 import javax.inject.Singleton
 

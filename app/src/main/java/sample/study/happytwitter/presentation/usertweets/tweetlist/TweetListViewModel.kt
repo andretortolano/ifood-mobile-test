@@ -6,9 +6,8 @@ import io.reactivex.functions.BiFunction
 import retrofit2.HttpException
 import sample.study.happytwitter.base.mvi.BaseViewModel
 import sample.study.happytwitter.base.network.NetworkingViewState
-import sample.study.happytwitter.data.objects.GoogleAnalyzeBody
-import sample.study.happytwitter.data.retrofit.GoogleAPI
-import sample.study.happytwitter.data.retrofit.TwitterAPI
+import sample.study.happytwitter.data.google.IGoogleRepo
+import sample.study.happytwitter.data.twitter.ITwitterRepo
 import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListAction.AnalyzeTweetAction
 import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListAction.LoadTweetsAction
 import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListResult.AnalyzeTweetResult
@@ -16,13 +15,12 @@ import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListResu
 import sample.study.happytwitter.presentation.usertweets.tweetlist.TweetListViewState.Companion.ERROR_PRIVATE_USER
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.AnalyzeTweetRequestState
 import sample.study.happytwitter.presentation.usertweets.tweetlist.tweetitem.TweetItemState
-import sample.study.happytwitter.utils.GoogleUtils
 import sample.study.happytwitter.utils.schedulers.ISchedulerProvider
 import javax.inject.Inject
 
 class TweetListViewModel @Inject constructor(
-    private val twitterAPI: TwitterAPI,
-    private val googleAPI: GoogleAPI,
+    private val twitterRepository: ITwitterRepo,
+    private val googleRepository: IGoogleRepo,
     private val schedulerProvider: ISchedulerProvider
 ) : BaseViewModel<TweetListAction, TweetListResult, TweetListViewState>() {
 
@@ -34,7 +32,7 @@ class TweetListViewModel @Inject constructor(
 
   private val loadTweetsProcessor = ObservableTransformer<LoadTweetsAction, LoadTweetsResult> { actions ->
     actions.flatMap { action ->
-      twitterAPI.getTweetsByUser(action.screenName)
+      twitterRepository.getTweetsByUser(action.screenName)
           .toObservable()
           .map(LoadTweetsResult::Success)
           .cast(LoadTweetsResult::class.java)
@@ -56,9 +54,9 @@ class TweetListViewModel @Inject constructor(
 
   private val analyseTweetSentimentProcessor = ObservableTransformer<AnalyzeTweetAction, AnalyzeTweetResult> { actions ->
     actions.flatMap { action ->
-      googleAPI.analyzeSentiment(GoogleAnalyzeBody.newInstance(action.listItem.tweet.text))
+      googleRepository.analyzeSentiment(action.listItem.tweet)
           .toObservable()
-          .map { AnalyzeTweetResult.Success(action.listItem, GoogleUtils.mapSentiment(it)) }
+          .map { AnalyzeTweetResult.Success(action.listItem, it.sentiment) }
           .cast(AnalyzeTweetResult::class.java)
           .onErrorReturn { AnalyzeTweetResult.UnknownError(action.listItem, it) }
           .subscribeOn(schedulerProvider.io())

@@ -1,7 +1,7 @@
 package sample.study.happytwitter.presentation.usertweets.finduser
 
 import sample.study.happytwitter.base.mvi.IResult
-import sample.study.happytwitter.data.objects.TwitterUser
+import sample.study.happytwitter.data.twitter.TwitterUser
 
 sealed class FindUserResult : IResult {
   sealed class ChangeUserResult : FindUserResult() {

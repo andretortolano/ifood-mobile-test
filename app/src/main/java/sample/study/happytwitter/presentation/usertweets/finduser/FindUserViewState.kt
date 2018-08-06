@@ -2,7 +2,7 @@ package sample.study.happytwitter.presentation.usertweets.finduser
 
 import sample.study.happytwitter.base.mvi.IViewState
 import sample.study.happytwitter.base.network.NetworkingViewState
-import sample.study.happytwitter.data.objects.TwitterUser
+import sample.study.happytwitter.data.twitter.TwitterUser
 
 data class FindUserViewState(
     val twitterUser: TwitterUser? = null,
