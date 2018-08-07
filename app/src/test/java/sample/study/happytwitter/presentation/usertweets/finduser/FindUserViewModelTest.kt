@@ -57,7 +57,7 @@ class FindUserViewModelTest {
 
   @Test
   fun `SearchUserAction - Verify Searching will emit`() {
-    `when`(twitterRepository.getUser(any())).thenReturn(Single.just(validUser))
+    `when`(twitterRepository.getUser(any())).thenReturn(Observable.just(validUser))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 
@@ -67,7 +67,7 @@ class FindUserViewModelTest {
 
   @Test
   fun `SearchUserAction - Success`() {
-    `when`(twitterRepository.getUser(any())).thenReturn(Single.just(validUser))
+    `when`(twitterRepository.getUser(any())).thenReturn(Observable.just(validUser))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 
@@ -78,7 +78,7 @@ class FindUserViewModelTest {
   fun `SearchUserAction - UserNotFound`() {
     val response =
         Response.error<Void>(404, ResponseBody.create(MediaType.parse(""), "{\"errors\": [{\"code\":50, \"message\": \"User not found.\"}]}"))
-    `when`(twitterRepository.getUser(any())).thenReturn(Single.error(HttpException(response)))
+    `when`(twitterRepository.getUser(any())).thenReturn(Observable.error(HttpException(response)))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 
@@ -89,7 +89,7 @@ class FindUserViewModelTest {
   fun `SearchUserAction - UserDisabled`() {
     val response =
         Response.error<Void>(402, ResponseBody.create(MediaType.parse(""), "{\"errors\": [{\"code\":63, \"message\": \"User not found.\"}]}"))
-    `when`(twitterRepository.getUser(any())).thenReturn(Single.error(HttpException(response)))
+    `when`(twitterRepository.getUser(any())).thenReturn(Observable.error(HttpException(response)))
 
     viewModel.actions(Observable.just(FindUserAction.SearchUserAction("username")))
 

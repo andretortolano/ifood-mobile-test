@@ -7,5 +7,6 @@ import android.arch.persistence.room.PrimaryKey
 data class TwitterTweet(
     @PrimaryKey val id: Long,
     val created_at: String,
-    val text: String
+    val text: String,
+    var screen_name: String?
 )

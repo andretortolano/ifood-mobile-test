@@ -33,7 +33,6 @@ class TweetListViewModel @Inject constructor(
   private val loadTweetsProcessor = ObservableTransformer<LoadTweetsAction, LoadTweetsResult> { actions ->
     actions.flatMap { action ->
       twitterRepository.getTweetsByUser(action.screenName)
-          .toObservable()
           .map(LoadTweetsResult::Success)
           .cast(LoadTweetsResult::class.java)
           .onErrorReturn { error ->

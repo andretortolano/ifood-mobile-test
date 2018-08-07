@@ -15,9 +15,19 @@ class GoogleRepository @Inject constructor(
     val remote: GoogleAPI
 ) : IGoogleRepo {
 
-  // TODO Persist what is needed into local
+  /**
+   * This is a sample of request that does not need to be updated by re-executing the remote call
+   *
+   * Once this message has a "result" from google Natural Language analysis this result won't change,
+   * so its safe to store it locally and never call it again.
+   *
+   */
   override fun analyzeSentiment(twitterTweet: TwitterTweet): Single<AnalyzedTweet> {
-    return remote.analyzeSentiment(GoogleAnalyzeBody.newInstance(twitterTweet.text))
-        .map { AnalyzedTweet(twitterTweet.id, GoogleUtils.mapSentiment(it)) }
+    return local.getAnalyzedTweetById(twitterTweet.id)
+        .switchIfEmpty(
+          remote.analyzeSentiment(GoogleAnalyzeBody.newInstance(twitterTweet.text))
+              .map { AnalyzedTweet(twitterTweet.id, GoogleUtils.mapSentiment(it)) }
+              .doOnSuccess(local::addAnalyzedTweet)
+        )
   }
 }

@@ -70,9 +70,6 @@ dependencies {
   implementation 'android.arch.persistence.room:rxjava2:1.1.1'
   kapt 'android.arch.persistence.room:compiler:1.1.1'
 
-  // MP Android Charts
-  implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-
   // Dagger2
   implementation 'com.google.dagger:dagger:2.16'
   implementation 'com.google.dagger:dagger-android:2.16'

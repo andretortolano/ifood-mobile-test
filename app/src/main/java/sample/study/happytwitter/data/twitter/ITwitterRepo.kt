@@ -1,10 +1,10 @@
 package sample.study.happytwitter.data.twitter
 
-import io.reactivex.Single
+import io.reactivex.Observable
 
 interface ITwitterRepo {
 
-  fun getUser(screenName: String): Single<TwitterUser>
+  fun getUser(screenName: String): Observable<TwitterUser>
 
-  fun getTweetsByUser(screenName: String): Single<List<TwitterTweet>>
+  fun getTweetsByUser(screenName: String): Observable<List<TwitterTweet>>
 }

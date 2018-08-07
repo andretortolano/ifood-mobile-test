@@ -43,7 +43,6 @@ class FindUserViewModel @Inject constructor(
   private val searchUserProcessor = ObservableTransformer<SearchUserAction, SearchUserResult> { actions ->
     actions.flatMap { action ->
       twitterRepository.getUser(action.username)
-          .toObservable()
           // replace _normal from image so that we have a decent profile image to load.
           .map { user -> user.copy(profile_image_url = user.profile_image_url?.replace("_normal", "_400x400")) }
           .map(SearchUserResult::Success)
