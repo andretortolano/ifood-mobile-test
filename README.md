@@ -3,16 +3,16 @@
 ### Snapshots
 
 <p align="center">
-  <img src="picture_01.png" width="200"/>
-  <img src="picture_02.png" width="200"/>
-  <img src="picture_03.png" width="200"/>
-  <img src="picture_04.png" width="200"/>
+  <img src="images/picture_01.png" width="200"/>
+  <img src="images/picture_02.png" width="200"/>
+  <img src="images/picture_03.png" width="200"/>
+  <img src="images/picture_04.png" width="200"/>
 </p>
 
 ### Orientation change maintains state
 
 <p align="center">
-  <img src="video_complete.gif" width="200"/>
+  <img src="images/video_complete.gif" width="200"/>
 </p>
 
 ## About the project
@@ -24,20 +24,11 @@ Happy Twitter is an Android App that given an twitter @User will list its tweets
 
 * MVI (Model View Intent) - Provides a unidirectional data flow and immutability, MVI based on JS frameworks such as Cycle.js and Redux, the key principle is that user interacts with the app from "Actions", actions will eventually create a new ViewState for the UI to render. MVI is designed to work with stream os datas (Observables) much like MVVM, but in the end, Unit Testing MVI looks simpler
 
-<p align="center">
-  <img src="https://www.google.com.br/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiWluOK89rcAhWCW5AKHZAsCWAQjRx6BAgBEAU&url=http%3A%2F%2Fhannesdorfmann.com%2Fandroid%2Fmodel-view-intent&psig=AOvVaw2Yqm3eFneoRqCYE0Re_gAp&ust=1533729851432210" />
-</p>
-
-<p align="center">
-  <img src="https://www.google.com.br/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiGjJ2b89rcAhXEW5AKHTuaDuwQjRx6BAgBEAU&url=https%3A%2F%2Fproandroiddev.com%2Fthe-contract-of-the-model-view-intent-architecture-777f95706c1e&psig=AOvVaw2Yqm3eFneoRqCYE0Re_gAp&ust=1533729851432210" />
-</p>
+![MVI](images/mvi_01.png "Model View Intent")
 
 * Repository Pattern - Abstraction of Domain Layer
 
-<p align="center">
-  <img src="https://www.google.com.br/url?sa=i&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwiqgbbq89rcAhWCH5AKHbs-CRMQjRx6BAgBEAU&url=https%3A%2F%2Fmedium.com%2Fcorebuild-software%2Fandroid-repository-pattern-using-rx-room-bac6c65d7385&psig=AOvVaw3FPnhqW1eoyU3dD6-kMm4s&ust=1533730051028919" />
-</p>
-
+![MVI](images/repository_01.png "Repository Pattern")
 
 ### Libraries
 
