@@ -2,10 +2,10 @@ package sample.study.happytwitter.injection
 
 import dagger.Binds
 import dagger.Module
-import sample.study.happytwitter.data.retrofit.GoogleAPI
+import sample.study.happytwitter.data.google.remote.GoogleAPI
 import sample.study.happytwitter.data.retrofit.MockGoogleAPI
 import sample.study.happytwitter.data.retrofit.MockTwitterAPI
-import sample.study.happytwitter.data.retrofit.TwitterAPI
+import sample.study.happytwitter.data.twitter.remote.TwitterAPI
 import javax.inject.Singleton
 
 @Suppress("unused")

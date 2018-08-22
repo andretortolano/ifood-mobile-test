@@ -1,9 +1,10 @@
 package sample.study.happytwitter.data.retrofit
 
 import io.reactivex.Single
-import sample.study.happytwitter.data.objects.GoogleAnalyzeBody
-import sample.study.happytwitter.data.objects.GoogleAnalyzeResponse
-import sample.study.happytwitter.data.objects.GoogleAnalyzeResponse.DocumentSentiment
+import sample.study.happytwitter.data.google.remote.GoogleAPI
+import sample.study.happytwitter.data.google.remote.GoogleAnalyzeBody
+import sample.study.happytwitter.data.google.remote.GoogleAnalyzeResponse
+import sample.study.happytwitter.data.google.remote.GoogleAnalyzeResponse.DocumentSentiment
 import java.util.concurrent.TimeUnit.SECONDS
 import javax.inject.Inject
 

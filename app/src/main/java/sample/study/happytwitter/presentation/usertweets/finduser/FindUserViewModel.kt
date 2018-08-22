@@ -7,7 +7,6 @@ import retrofit2.HttpException
 import sample.study.happytwitter.base.mvi.BaseViewModel
 import sample.study.happytwitter.base.network.NetworkingViewState
 import sample.study.happytwitter.data.twitter.ITwitterRepo
-import sample.study.happytwitter.data.twitter.TwitterRepository
 import sample.study.happytwitter.data.twitter.remote.TwitterError
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserAction.ChangeUserAction
 import sample.study.happytwitter.presentation.usertweets.finduser.FindUserAction.SearchUserAction
